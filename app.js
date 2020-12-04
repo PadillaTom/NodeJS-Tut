@@ -70,4 +70,6 @@ const server = http.createServer(routes);
 
 server.listen(3000);
 
-// EJ 1: Create a server
+//--------------------------> EXERCISE 1 DONE <-----------------------
+
+// :::::::::::::::: SECTION 4 ::::::::::::::::::::::::
