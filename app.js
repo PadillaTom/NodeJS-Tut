@@ -1,75 +1,94 @@
-// ::::::::::::: Importing MODULES ::::::::::::::
-// const http = require('http');
-// const fs = require('fs');
+//----------------------------------------
+// Section 5 ::: EXPRESS :::
+//------------------------------------------
 
-//  :::::::::::: Creating Server ::::::::::::::::::
-// 1) Function inside Function:
-// function reqListener(req, res) {
-// }
-// http.createServer(reqListener);
-//
-// 2) Arrow Function:
-// const server = http.createServer((req, res) => {
-// REQUEST: Used to SEE data --->
-//   console.log(req.url, req.method, req.headers);
-//
-// TO EXIT THE LOOP:
-//    process.exit();
-//
-//  REQUESTING URLS:
-//   const url = req.url;
-//   const method = req.method; //Parse the METHOD to be used
+// const express = require('express'); //import Express
+// const bodyParser = require('body-parser');
+// // Routes:
+// const adminRoutes = require('./Routes/admin');
+// const shopRoutes = require('./Routes/shop');
 
-//   if (url === '/') {
-//     res.write('<html>');
-//     res.write('<head><title> Enter Info </title></head>');
-//     res.write(
-//       '<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit" >Send</button> </form></body>'
-//     );
-//     res.write('</html>');
-//     return res.end();
-//   }
-//   if (url === '/message' && method === 'POST') {
-// Para PEDIR DATA:
-// const body = [];
-// req.on('data', (chunk) => {
-//   body.push(chunk); //Mandamos la data al BODY creado
+// const app = express(); // Store functions created by express
+
+//
+// -------Middlewares------
+// Incoming request is Funnled through multiple functions, until we send a response.
+// Allows us to split our code into pieces.
+//  USE() --> Will run on every incoming request.
+// NEXT: is a function, hast o be executed to allow request travel to the next middleware.
+// app.use((req, res, next) => {
+//   console.log('I am in the middlware');
+//   next();
 // });
-// Finalizamos el pedido de data:
-//     req.on('end', () => {
-//       const parsedBody = Buffer.concat(body).toString();
-//       //   console.log(parsedBody);
-//       const message = parsedBody.split('=')[1];
-//       fs.writeFileSync('message.txt', message);
-//     });
-//     //   Necesitamos un STATUS CODE:
-//     res.statusCode = 302;
-//     res.setHeader('Location', '/');
-//     return res.end();
-//   }
-
-// RESPONSE: to WRITE data--->
-//   res.setHeader('Content-Type', 'text/html');
-//   res.write('<html>');
-//   res.write('<head><title> First Node </title></head>');
-//   res.write('<body><h2> Hello from my NODE </h2></body>');
-//   res.write('</html>');
-//   res.end();
+// SEND(): Automatically sets content-type, once used no need for NEXT.
+// app.use((req, res, next) => {
+//   console.log('I am in the middlware 2 - whithout NEXT -');
+//   res.send('<h1>Hello from Express</h1>');
 // });
-// server.listen(3000);
+//  RESUMEN: We travel from middleware to middleware, with NEXT until we have a SEND
 
 //
-//
-// :::::::::::::: Creating ROUTES.JS :::::::::::::::::::
-// In routes we pasted the previous code, we learn how to import and export(module.exports)
-// this is the clean APP.JS
-const http = require('http');
-const routes = require('./routes');
+// -------Routes------
+// Path, Funct(req,res,next)
 
-const server = http.createServer(routes);
+// app.use('/', (req, res, next) => {
+//   console.log('This will always RUN because it is on TOP and NEXT()');
+//   next();
+// });
 
-server.listen(3000);
+//  BODY PARSER --> so we can use the "req.body" to get DATA from inputs and stuff.
+//  always runs (calls next), must have on top
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
 
-//--------------------------> EXERCISE 1 DONE <-----------------------
+// Main Routes:
+// app.use('/add-product', (req, res, next) => {
+//   res.send(
+//     '<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product</button> </form>'
+//   );
+// });
+// app.post('/product', (req, res) => {
+//   // POST will filter and only get POST methods.
+//   console.log(req.body);
+//   res.redirect('/'); // Send me to Homepage
+// });
 
-// :::::::::::::::: SECTION 4 ::::::::::::::::::::::::
+// app.use(adminRoutes); // Route creada en Routes/Admin, importada como adminRoutes
+// app.use(shopRoutes); // Route creada en Routes/Shop, importada como shopRoutes
+// app.use('/', (req, res, next) => {
+//   res.send('<h1> Homepage </h1>');
+// });
+
+// app.listen(3000); // No need for HTTP, app.listen() will take care of everything
+
+//----------------------------------------
+// MAIN APP:
+//------------------------------------------
+
+const path = require('path');
+
+const express = require('express'); //import Express
+const bodyParser = require('body-parser');
+const app = express(); // Store functions created by express
+
+const rootDir = require('./utils/path');
+
+// Importing Routes:
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
+// Body Parser:
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Routes:
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(rootDir, 'views', 'errorPage.html'));
+});
+
+// Server:
+app.listen(3000); // No need for HTTP, app.listen() will take care of everything
