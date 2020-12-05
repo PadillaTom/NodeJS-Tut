@@ -77,7 +77,7 @@ const app = express(); // Store functions created by express
 const rootDir = require('./utils/path');
 
 // Importing Routes:
-const adminRoutes = require('./routes/admin');
+const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 // Body Parser:
@@ -86,7 +86,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 // Routes:
-app.use('/admin', adminRoutes);
+app.use('/admin', adminData.routes);
 app.use(shopRoutes);
 app.use((req, res) => {
   res.status(404).sendFile(path.join(rootDir, 'views', 'errorPage.html'));
