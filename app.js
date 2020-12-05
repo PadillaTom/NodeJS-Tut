@@ -82,6 +82,8 @@ const shopRoutes = require('./routes/shop');
 
 // Body Parser:
 app.use(bodyParser.urlencoded({ extended: true }));
+// Adding Static PATH --> This will allow client to enter PUBLIC folder.
+app.use(express.static(path.join(rootDir, 'public')));
 
 // Routes:
 app.use('/admin', adminRoutes);
