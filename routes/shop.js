@@ -11,7 +11,10 @@ router.get('/', (req, res, next) => {
   // Dirname: Direct straight to THIS folder, Views: folder, Shop.html: FILE
   console.log(adminData.products);
 
-  res.sendFile(path.join(rootDir, 'views', 'shop.html'));
+  // To send PUG:
+  res.render('shop');
+  // To send HTML:
+  // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
 });
 
 module.exports = router;
