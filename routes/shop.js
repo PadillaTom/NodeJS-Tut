@@ -9,10 +9,10 @@ const adminData = require('./admin');
 router.get('/', (req, res, next) => {
   // PATH --> Join will create the path dynamically to all OS.
   // Dirname: Direct straight to THIS folder, Views: folder, Shop.html: FILE
-  console.log(adminData.products);
+  const products = adminData.products;
 
   // To send PUG:
-  res.render('shop');
+  res.render('shop', { prods: products, docTitle: 'My PUG Shop' });
   // To send HTML:
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
 });

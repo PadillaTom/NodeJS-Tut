@@ -94,7 +94,7 @@ app.use(express.static(path.join(rootDir, 'public')));
 app.use('/admin', adminData.routes);
 app.use(shopRoutes);
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(rootDir, 'views', 'errorPage.html'));
+  res.status(404).render('404');
 });
 
 // Server:
