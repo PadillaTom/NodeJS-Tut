@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
   const products = adminData.products;
 
   // To send PUG:
-  res.render('shop', { prods: products, docTitle: 'My PUG Shop' });
+  res.render('shop', { prods: products, pageTitle: 'My Pug shop', path: '/' });
   // To send HTML:
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
 });

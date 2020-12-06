@@ -72,11 +72,17 @@ const path = require('path');
 
 const express = require('express'); //import Express
 const bodyParser = require('body-parser');
+const expressHbs = require('express-handlebars');
+
 const app = express(); // Store functions created by express
 
 // PUG Template Engine:
 // "view engine" -> Forces to use an engine // "view" tells what folder to use
-app.set('view engine', 'pug');
+// app.set('view engine', 'pug');
+// app.set('views', 'views');
+// HANDLEBARS Template Enigne:
+app.engine('handlebars', expressHbs());
+app.set('view engine', 'handlebars');
 app.set('views', 'views');
 
 const rootDir = require('./utils/path');
@@ -94,7 +100,7 @@ app.use(express.static(path.join(rootDir, 'public')));
 app.use('/admin', adminData.routes);
 app.use(shopRoutes);
 app.use((req, res) => {
-  res.status(404).render('404');
+  res.status(404).render('404', { pageTitle: 'Not Found' });
 });
 
 // Server:
