@@ -72,7 +72,7 @@ const path = require('path');
 
 const express = require('express'); //import Express
 const bodyParser = require('body-parser');
-const expressHbs = require('express-handlebars');
+// const expressHbs = require('express-handlebars');
 
 const app = express(); // Store functions created by express
 
@@ -82,15 +82,19 @@ const app = express(); // Store functions created by express
 // app.set('views', 'views');
 
 // HANDLEBARS Template Enigne:
-app.engine(
-  'hbs',
-  expressHbs({
-    extname: 'hbs',
-    layoutsDir: 'views/layouts',
-    defaultLayout: 'main-layout',
-  })
-);
-app.set('view engine', 'hbs');
+// app.engine(
+//   'hbs',
+//   expressHbs({
+//     extname: 'hbs',
+//     layoutsDir: 'views/layouts',
+//     defaultLayout: 'main-layout',
+//   })
+// );
+// app.set('view engine', 'hbs');
+// app.set('views', 'views');
+
+// EJS ----> WE will use it throughout the course---->
+app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const rootDir = require('./utils/path');
