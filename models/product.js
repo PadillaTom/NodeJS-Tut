@@ -21,11 +21,15 @@ const getProductsFromFile = (cb) => {
     }
   });
 };
+
 // Class PRODUCT:
 module.exports = class Product {
   // Give title from Req.Body to this Product
-  constructor(title) {
+  constructor(title, imageUrl, description, price) {
     this.title = title;
+    this.imageUrl = imageUrl;
+    this.description = description;
+    this.price = price;
   }
 
   // :::: Storaging Products --> ARRAY <-- :::::
@@ -35,6 +39,7 @@ module.exports = class Product {
   //   }
   //
   // :::: Storaging Products --> FILE SYSTEM <-- :::::
+
   save() {
     getProductsFromFile((products) => {
       products.push(this); // Refers to THIS CLASS.
