@@ -49,3 +49,4 @@ module.exports = class Product {
     getProductsFromFile(cb);
   }
 };
+// PULLED ALL GIT FROM COURSE TO START CLEAN:
