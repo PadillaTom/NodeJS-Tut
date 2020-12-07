@@ -25,13 +25,14 @@ exports.postAddProduct = (req, res, next) => {
 
 // GET products in Homepage:
 exports.getProducts = (req, res, next) => {
-  const products = Product.fetchAll();
-  res.render('shop', {
-    prods: products,
-    pageTitle: 'My EJS shop',
-    path: '/',
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true,
+  Product.fetchAll((products) => {
+    res.render('shop', {
+      prods: products,
+      pageTitle: 'My EJS shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   });
 };
