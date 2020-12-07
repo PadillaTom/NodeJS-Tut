@@ -80,9 +80,17 @@ const app = express(); // Store functions created by express
 // "view engine" -> Forces to use an engine // "view" tells what folder to use
 // app.set('view engine', 'pug');
 // app.set('views', 'views');
+
 // HANDLEBARS Template Enigne:
-app.engine('handlebars', expressHbs());
-app.set('view engine', 'handlebars');
+app.engine(
+  'hbs',
+  expressHbs({
+    extname: 'hbs',
+    layoutsDir: 'views/layouts',
+    defaultLayout: 'main-layout',
+  })
+);
+app.set('view engine', 'hbs');
 app.set('views', 'views');
 
 const rootDir = require('./utils/path');
