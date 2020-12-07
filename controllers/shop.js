@@ -22,6 +22,17 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
+// GET Product wih PARAMS:
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId, (product) => {
+    res.render('shop/product-detail', {
+      path: '/products',
+      pageTitle: product.title,
+      product: product,
+    });
+  });
+};
 // GET Cart:
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {

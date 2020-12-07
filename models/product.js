@@ -41,6 +41,8 @@ module.exports = class Product {
   // :::: Storaging Products --> FILE SYSTEM <-- :::::
 
   save() {
+    // Adding unique ID:
+    this.id = Math.random().toString();
     getProductsFromFile((products) => {
       products.push(this); // Refers to THIS CLASS.
       fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -52,6 +54,13 @@ module.exports = class Product {
   // 2) Will gather products from the chosen Storage Method.
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+  // 3) Get PARAMS for Product ID:
+  static findById(id, cb) {
+    getProductsFromFile((products) => {
+      const product = products.find((p) => p.id === id);
+      cb(product);
+    });
   }
 };
 // PULLED ALL GIT FROM COURSE TO START CLEAN:
