@@ -65,14 +65,16 @@
 // app.listen(3000); // No need for HTTP, app.listen() will take care of everything
 
 //----------------------------------------
-// MAIN APP:
+// ::::::::::::::::: MAIN APP :::::::::::::
 //------------------------------------------
 
 const path = require('path');
-
 const express = require('express'); //import Express
 const bodyParser = require('body-parser');
 // const expressHbs = require('express-handlebars');
+
+// ::::::::::::: Controllers :::::::::::::::::
+const errorController = require('./controllers/error');
 
 const app = express(); // Store functions created by express
 
@@ -100,7 +102,7 @@ app.set('views', 'views');
 const rootDir = require('./utils/path');
 
 // Importing Routes:
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 // Body Parser:
@@ -109,11 +111,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
 // Routes:
-app.use('/admin', adminData.routes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-app.use((req, res) => {
-  res.status(404).render('404', { pageTitle: 'Not Found' });
-});
+app.use(errorController.get404);
 
 // Server:
 app.listen(3000); // No need for HTTP, app.listen() will take care of everything
