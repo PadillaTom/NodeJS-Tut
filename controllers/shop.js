@@ -3,36 +3,75 @@ const Cart = require('../models/cart');
 
 // GET All Products --->
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'All Products',
-      path: '/products',
-    });
-  });
+  // ::::: Callback (File SYSTEM) :::::
+  // Product.fetchAll((products) => {
+  //   res.render('shop/product-list', {
+  //     prods: products,
+  //     pageTitle: 'All Products',
+  //     path: '/products',
+  //   });
+  // });
+  //
+  // ::::: MYSQL :::::
+  Product.fetchAll()
+    .then(([rows]) => {
+      res.render('shop/product-list', {
+        path: '/products',
+        pageTitle: 'All Products',
+        prods: rows,
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 // GET Individual Product by Params and Id --->
 exports.getProduct = (req, res, next) => {
+  // ::::: Callback (File SYSTEM) :::::
+  // const prodId = req.params.productId;
+  // Product.findById(prodId, (product) => {
+  // res.render('shop/product-detail', {
+  //   product: product,
+  //   pageTitle: product.title,
+  //   path: '/products',
+  // });
+  // });
+  //
+  // ::::: MYSQL :::::
   const prodId = req.params.productId;
-  Product.findById(prodId, (product) => {
-    res.render('shop/product-detail', {
-      product: product,
-      pageTitle: product.title,
-      path: '/products',
+  Product.findById(prodId)
+    .then(([product]) => {
+      res.render('shop/product-detail', {
+        path: '/products',
+        pageTitle: product.title,
+        product: product[0],
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 // GET Homepage Products --->
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('shop/index', {
-      prods: products,
-      pageTitle: 'Shop',
-      path: '/',
-    });
-  });
+  // ::::: Callback (File SYSTEM) :::::
+  // Product.fetchAll((products) => {
+  //   res.render('shop/index', {
+  //     prods: products,
+  //     pageTitle: 'Shop',
+  //     path: '/',
+  //   });
+  // });
+  //
+  // ::::: MYSQL :::::
+  Product.fetchAll()
+    .then(([rows]) => {
+      res.render('shop/index', {
+        path: '/',
+        pageTitle: 'Shop',
+        prods: rows,
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 // GET Cart Page --->
