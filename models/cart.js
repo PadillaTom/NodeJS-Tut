@@ -8,6 +8,7 @@ const p = path.join(
 );
 
 module.exports = class Cart {
+  // ADD PRODUCTS -------->
   static addProduct(id, productPrice) {
     // Fetch the previous cart
     fs.readFile(p, (err, fileContent) => {
@@ -37,13 +38,17 @@ module.exports = class Cart {
       });
     });
   }
+  // DELETE ------->
   static deleteProduct(id, productPrice) {
     fs.readFile(p, (err, data) => {
       if (err) {
         return;
       }
-      const updatedCart = { ...data };
+      const updatedCart = { ...JSON.parse(data) };
       const product = updatedCart.products.findIndex((prod) => prod.id === id);
+      if (!product) {
+        return;
+      }
       const productQty = product.qty;
       updatedCart.products = updatedCart.products.filter(
         (prod) => prod.id !== id
@@ -53,6 +58,17 @@ module.exports = class Cart {
       fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
         console.log(err);
       });
+    });
+  }
+  // FETCH CART ITEMS -------->
+  static getCart(cb) {
+    fs.readFile(p, (err, data) => {
+      const cart = JSON.parse(data);
+      if (err) {
+        cb(null);
+      } else {
+        cb(cart);
+      }
     });
   }
 };
