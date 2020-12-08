@@ -5,12 +5,21 @@ const Product = require('../models/product');
 // GET --->
 // Add Product:
 exports.getAddProduct = (req, res, next) => {
-  res.render('admin/add-product', {
+  res.render('admin/edit-product', {
     pageTitle: 'Add Products',
     path: '/admin/add-product',
-    formsCSS: true,
-    productCSS: true,
-    activeAddProd: true,
+  });
+};
+// Edit Product:
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (!editMode) {
+    res.redirect('/');
+  }
+  res.render('admin/edit-product', {
+    pageTitle: 'Edit Product',
+    path: '/admin/add-product',
+    editing: editMode,
   });
 };
 // Products:

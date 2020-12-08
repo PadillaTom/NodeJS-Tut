@@ -12,6 +12,8 @@ const adminController = require('../controllers/admin');
 router.get('/add-product', adminController.getAddProduct);
 // /admin/products
 router.get('/products', adminController.getProducts);
+//  Edit products
+router.get('/edit-product/:productId', adminController.getEditProduct);
 
 // ---> POST <---
 // /admin/add-product
