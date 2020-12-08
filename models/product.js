@@ -1,66 +1,60 @@
-// :::: Storaging Products :::::
-// 1) Products Array to be changed into DB:
-// const products = [];
-//
-// 2) Working with FILE SYSTEM:
 const fs = require('fs');
 const path = require('path');
 
-// HELPERS:
 const p = path.join(
   path.dirname(process.mainModule.filename),
   'data',
   'products.json'
 );
-const getProductsFromFile = (cb) => {
-  fs.readFile(p, (err, data) => {
+
+const getProductsFromFile = cb => {
+  fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]);
     } else {
-      cb(JSON.parse(data));
+      cb(JSON.parse(fileContent));
     }
   });
 };
 
-// Class PRODUCT:
 module.exports = class Product {
-  // Give title from Req.Body to this Product
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
   }
 
-  // :::: Storaging Products --> ARRAY <-- :::::
-  // 1) Push this product to the ARRAY:
-  //   save() {
-  //     products.push(this); // ARRAY
-  //   }
-  //
-  // :::: Storaging Products --> FILE SYSTEM <-- :::::
-
   save() {
-    // Adding unique ID:
-    this.id = Math.random().toString();
-    getProductsFromFile((products) => {
-      products.push(this); // Refers to THIS CLASS.
-      fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
+    getProductsFromFile(products => {
+      if (this.id) {
+        const existingProductIndex = products.findIndex(
+          prod => prod.id === this.id
+        );
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+          console.log(err);
+        });
+      } else {
+        this.id = Math.random().toString();
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), err => {
+          console.log(err);
+        });
+      }
     });
   }
 
-  // 2) Will gather products from the chosen Storage Method.
   static fetchAll(cb) {
     getProductsFromFile(cb);
   }
-  // 3) Get PARAMS for Product ID:
+
   static findById(id, cb) {
-    getProductsFromFile((products) => {
-      const product = products.find((p) => p.id === id);
+    getProductsFromFile(products => {
+      const product = products.find(p => p.id === id);
       cb(product);
     });
   }
 };
-// PULLED ALL GIT FROM COURSE TO START CLEAN:

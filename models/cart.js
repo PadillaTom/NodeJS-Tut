@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// HELPERS:
 const p = path.join(
   path.dirname(process.mainModule.filename),
   'data',
@@ -10,35 +9,30 @@ const p = path.join(
 
 module.exports = class Cart {
   static addProduct(id, productPrice) {
-    //  Fetch The previous Cart:
-    fs.readFile(p, (err, data) => {
-      // Create Cart:
+    // Fetch the previous cart
+    fs.readFile(p, (err, fileContent) => {
       let cart = { products: [], totalPrice: 0 };
       if (!err) {
-        cart = JSON.parse(data);
+        cart = JSON.parse(fileContent);
       }
-
-      // Analyze the cart -> Find existing Products:
+      // Analyze the cart => Find existing product
       const existingProductIndex = cart.products.findIndex(
-        (prod) => prod.id === id
+        prod => prod.id === id
       );
       const existingProduct = cart.products[existingProductIndex];
       let updatedProduct;
-      // Add new Product / increase Quantity:
+      // Add new product/ increase quantity
       if (existingProduct) {
-        // IF --> Id already exist in Array:
         updatedProduct = { ...existingProduct };
         updatedProduct.qty = updatedProduct.qty + 1;
         cart.products = [...cart.products];
         cart.products[existingProductIndex] = updatedProduct;
       } else {
-        // Else --> Add new product
         updatedProduct = { id: id, qty: 1 };
         cart.products = [...cart.products, updatedProduct];
       }
-      // Total Price:
       cart.totalPrice = cart.totalPrice + +productPrice;
-      fs.writeFile(p, JSON.stringify(cart), (err) => {
+      fs.writeFile(p, JSON.stringify(cart), err => {
         console.log(err);
       });
     });
