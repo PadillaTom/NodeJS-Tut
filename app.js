@@ -1,8 +1,12 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-// Database:
-const db = require('./util/database');
+//
+// Databases ---->
+//
+// const db = require('./util/database'); // My SQL
+const sequelize = require('./util/database'); // Sequelize
+
 // Controllers:
 const errorController = require('./controllers/error');
 
@@ -22,4 +26,15 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.get404);
 
-app.listen(3000);
+// Sequelize:
+sequelize
+  .sync()
+  .then((result) => {
+    // console.log(result);
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// app.listen(3000);

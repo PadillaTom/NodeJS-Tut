@@ -13,15 +13,28 @@ exports.getProducts = (req, res, next) => {
   // });
   //
   // ::::: MYSQL :::::
-  Product.fetchAll()
-    .then(([rows]) => {
+  // Product.fetchAll()
+  //   .then(([rows]) => {
+  //     res.render('shop/product-list', {
+  //       path: '/products',
+  //       pageTitle: 'All Products',
+  //       prods: rows,
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: SEQUELIZE ::::::
+  Product.findAll()
+    .then((products) => {
       res.render('shop/product-list', {
         path: '/products',
         pageTitle: 'All Products',
-        prods: rows,
+        prods: products,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // GET Individual Product by Params and Id --->
@@ -37,13 +50,28 @@ exports.getProduct = (req, res, next) => {
   // });
   //
   // ::::: MYSQL :::::
+  // const prodId = req.params.productId;
+  // Product.findById(prodId)
+  //   .then(([product]) => {
+  //     res.render('shop/product-detail', {
+  //       path: '/products',
+  //       pageTitle: product.title,
+  //       product: product[0],
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: SEQUELIZE ::::::
   const prodId = req.params.productId;
-  Product.findById(prodId)
-    .then(([product]) => {
+  // Product.findAll({ where: {id: prodId} }).then().catch()
+  Product.findByPk(prodId)
+    .then((product) => {
       res.render('shop/product-detail', {
         path: '/products',
         pageTitle: product.title,
-        product: product[0],
+        product: product,
       });
     })
     .catch((err) => {
@@ -63,15 +91,28 @@ exports.getIndex = (req, res, next) => {
   // });
   //
   // ::::: MYSQL :::::
-  Product.fetchAll()
-    .then(([rows]) => {
+  // Product.fetchAll()
+  //   .then(([rows]) => {
+  //     res.render('shop/index', {
+  //       path: '/',
+  //       pageTitle: 'Shop',
+  //       prods: rows,
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: SEQUELIZE ::::::
+  Product.findAll()
+    .then((products) => {
       res.render('shop/index', {
         path: '/',
         pageTitle: 'Shop',
-        prods: rows,
+        prods: products,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // GET Cart Page --->
