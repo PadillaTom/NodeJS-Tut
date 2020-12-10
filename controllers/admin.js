@@ -35,46 +35,85 @@ exports.postAddProduct = (req, res, next) => {
     .then((result) => {
       // console.log(result);
       console.log('Creation OK');
+      res.redirect('/admin/products');
     })
     .catch((err) => {
       console.log(err);
     });
 };
-
+// GET Edit Product:
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findById(prodId, (product) => {
-    if (!product) {
-      return res.redirect('/');
-    }
-    res.render('admin/edit-product', {
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: editMode,
-      product: product,
+  // ::::: MYSQL :::::
+  // Product.findById(prodId, (product) => {
+  //   if (!product) {
+  //     return res.redirect('/');
+  //   }
+  //   res.render('admin/edit-product', {
+  //     pageTitle: 'Edit Product',
+  //     path: '/admin/edit-product',
+  //     editing: editMode,
+  //     product: product,
+  //   });
+  // });
+  //
+  // :::::: SEQUELIZE ::::::
+  Product.findByPk(prodId)
+    .then((product) => {
+      if (!product) {
+        res.redirect('/');
+      } else {
+        res.render('admin/edit-product', {
+          path: '/admin/edit-product',
+          pageTitle: 'Edit Product',
+          product: product,
+          editing: editMode,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
+// POST Edit Product:
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  const updatedProduct = new Product(
-    prodId,
-    updatedTitle,
-    updatedImageUrl,
-    updatedDesc,
-    updatedPrice
-  );
-  updatedProduct.save();
-  res.redirect('/admin/products');
+  // ::::: MYSQL :::::
+  // const updatedProduct = new Product(
+  //   prodId,
+  //   updatedTitle,
+  //   updatedImageUrl,
+  //   updatedDesc,
+  //   updatedPrice
+  // );
+  // updatedProduct.save();
+  // res.redirect('/admin/products');
+  //
+  // :::::: SEQUELIZE ::::::
+  Product.findByPk(prodId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageUrl = updatedImageUrl;
+      product.description = updatedDesc;
+      return product.save();
+    })
+    .then((result) => {
+      console.log('Product Updated');
+      res.redirect('/admin/products');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -101,8 +140,23 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
+// POST Delete:
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect('/admin/products');
+  // ::::: MYSQL :::::
+  // Product.deleteById(prodId);
+  // res.redirect('/admin/products');
+  //
+  // :::::: SEQUELIZE ::::::
+  Product.findByPk(prodId)
+    .then((product) => {
+      return product.destroy();
+    })
+    .then((result) => {
+      console.log('Destroyed Done');
+      res.redirect('/admin/products');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
