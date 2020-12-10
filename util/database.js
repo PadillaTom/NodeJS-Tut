@@ -13,11 +13,29 @@
 //
 // ::::::::::::::: Using SEQUELIZE :::::::::::::::
 //
+// const Sequelize = require('sequelize');
+// const sequelize = new Sequelize('node-tut', 'root', 'asdasd123', {
+//   dialect: 'mysql',
+//   host: 'localhost',
+// });
+// module.exports = sequelize;
 
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('node-tut', 'root', 'asdasd123', {
-  dialect: 'mysql',
-  host: 'localhost',
-});
+//
+// ::::::::::::::: Using MONGODB :::::::::::::::
+//
 
-module.exports = sequelize;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
+
+// Create a Method
+const mongoConnect = (callback) => {
+  MongoClient.connect(
+    'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/<dbname>?retryWrites=true&w=majority'
+  )
+    .then((client) => {
+      console.log('Connected');
+      callback(client);
+    })
+    .catch((err) => console.log(err));
+};
+module.exports = mongoConnect;
