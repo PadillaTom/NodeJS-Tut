@@ -26,12 +26,14 @@ exports.postAddProduct = (req, res, next) => {
   //   });
   //
   // :::::: SEQUELIZE ::::::
-  Product.create({
-    title: title,
-    imageUrl: imageUrl,
-    price: price,
-    description: description,
-  })
+  //  Product.create({})
+  req.user
+    .createProduct({
+      title: title,
+      imageUrl: imageUrl,
+      price: price,
+      description: description,
+    })
     .then((result) => {
       // console.log(result);
       console.log('Creation OK');
@@ -62,8 +64,12 @@ exports.getEditProduct = (req, res, next) => {
   // });
   //
   // :::::: SEQUELIZE ::::::
-  Product.findByPk(prodId)
-    .then((product) => {
+
+  // Product.findByPk(prodId)
+  req.user
+    .getProducts({ where: { id: prodId } })
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         res.redirect('/');
       } else {
@@ -127,7 +133,9 @@ exports.getProducts = (req, res, next) => {
   // });
   //
   // :::::: SEQUELIZE ::::::
-  Product.findAll()
+  // Product.findAll()
+  req.user
+    .getProducts()
     .then((products) => {
       res.render('admin/products', {
         path: '/admin/products',
