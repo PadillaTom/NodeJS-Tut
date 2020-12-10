@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
+// const Cart = require('../models/cart'); // --> User for FS
 
 // GET All Products --->
 exports.getProducts = (req, res, next) => {
@@ -233,6 +233,34 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+// POST Order from Cart -->
+exports.postOrder = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then((products) => {
+      return req.user
+        .createOrder() // Creamos Order
+        .then((order) => {
+          return order.addProducts(
+            // ADD Prods to order
+            products.map((product) => {
+              product.orderItem = {
+                quantity: product.cartItem.quantity, // QTY for each prod = Qty specified in Cart VIEW
+              };
+              return product;
+            })
+          );
+        })
+        .catcH((err) => console.log(err));
+    })
+    .then((result) => {
+      res.redirect('/orders');
+    })
+    .catch((err) => console.log(err));
+};
 // GET Orders Page --->
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
