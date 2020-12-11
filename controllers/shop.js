@@ -24,7 +24,20 @@ exports.getProducts = (req, res, next) => {
   //   .catch((err) => console.log(err));
   //
   // :::::: SEQUELIZE ::::::
-  Product.findAll()
+  // Product.findAll()
+  //   .then((products) => {
+  //     res.render('shop/product-list', {
+  //       path: '/products',
+  //       pageTitle: 'All Products',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB :::::::
+  Product.fetchAll()
     .then((products) => {
       res.render('shop/product-list', {
         path: '/products',
@@ -64,9 +77,23 @@ exports.getProduct = (req, res, next) => {
   //   });
   //
   // :::::: SEQUELIZE ::::::
+  // const prodId = req.params.productId;
+  // // Product.findAll({ where: {id: prodId} }).then().catch()
+  // Product.findByPk(prodId)
+  //   .then((product) => {
+  //     res.render('shop/product-detail', {
+  //       path: '/products',
+  //       pageTitle: product.title,
+  //       product: product,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
   const prodId = req.params.productId;
-  // Product.findAll({ where: {id: prodId} }).then().catch()
-  Product.findByPk(prodId)
+  Product.findById(prodId)
     .then((product) => {
       res.render('shop/product-detail', {
         path: '/products',
@@ -102,7 +129,20 @@ exports.getIndex = (req, res, next) => {
   //   .catch((err) => console.log(err));
   //
   // :::::: SEQUELIZE ::::::
-  Product.findAll()
+  // Product.findAll()
+  //   .then((products) => {
+  //     res.render('shop/index', {
+  //       path: '/',
+  //       pageTitle: 'Shop',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB :::::::
+  Product.fetchAll()
     .then((products) => {
       res.render('shop/index', {
         path: '/',

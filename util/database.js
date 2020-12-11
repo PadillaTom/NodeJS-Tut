@@ -27,15 +27,33 @@
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
+let _db;
+
 // Create a Method
 const mongoConnect = (callback) => {
   MongoClient.connect(
-    'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/<dbname>?retryWrites=true&w=majority'
+    'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/<dbname>?retryWrites=true&w=majority',
+    {
+      useUnifiedTopology: true,
+    }
   )
     .then((client) => {
       console.log('Connected');
-      callback(client);
+      _db = client.db('shop'); // --> Connection to my DB(NAME)
+      callback();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      throw err;
+    });
 };
-module.exports = mongoConnect;
+
+const getDb = () => {
+  if (_db) {
+    return _db; // --> Acces to my connected DB
+  }
+  throw 'No DB Found';
+};
+
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;

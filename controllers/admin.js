@@ -8,6 +8,7 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
+// POST PRODUCT to be ADDED  ----->
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
@@ -26,14 +27,27 @@ exports.postAddProduct = (req, res, next) => {
   //   });
   //
   // :::::: SEQUELIZE ::::::
-  //  Product.create({})
-  req.user
-    .createProduct({
-      title: title,
-      imageUrl: imageUrl,
-      price: price,
-      description: description,
-    })
+  // Product.create({});
+  // req.user
+  //   .createProduct({
+  //     title: title,
+  //     imageUrl: imageUrl,
+  //     price: price,
+  //     description: description,
+  //   })
+  //   .then((result) => {
+  //     // console.log(result);
+  //     console.log('Creation OK');
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
+  const product = new Product(title, price, description, imageUrl);
+  product
+    .save()
     .then((result) => {
       // console.log(result);
       console.log('Creation OK');
@@ -43,7 +57,8 @@ exports.postAddProduct = (req, res, next) => {
       console.log(err);
     });
 };
-// GET Edit Product:
+
+// GET PRODUCT to be EDITED ----->
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
@@ -64,12 +79,29 @@ exports.getEditProduct = (req, res, next) => {
   // });
   //
   // :::::: SEQUELIZE ::::::
-
   // Product.findByPk(prodId)
-  req.user
-    .getProducts({ where: { id: prodId } })
-    .then((products) => {
-      const product = products[0];
+  // req.user
+  //   .getProducts({ where: { id: prodId } })
+  //   .then((products) => {
+  //     const product = products[0];
+  //     if (!product) {
+  //       res.redirect('/');
+  //     } else {
+  //       res.render('admin/edit-product', {
+  //         path: '/admin/edit-product',
+  //         pageTitle: 'Edit Product',
+  //         product: product,
+  //         editing: editMode,
+  //       });
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
+  Product.findById(prodId)
+    .then((product) => {
       if (!product) {
         res.redirect('/');
       } else {
@@ -86,7 +118,7 @@ exports.getEditProduct = (req, res, next) => {
     });
 };
 
-// POST Edit Product:
+// POST EDITED PRODUCT ------>
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
@@ -105,23 +137,39 @@ exports.postEditProduct = (req, res, next) => {
   // res.redirect('/admin/products');
   //
   // :::::: SEQUELIZE ::::::
-  Product.findByPk(prodId)
-    .then((product) => {
-      product.title = updatedTitle;
-      product.price = updatedPrice;
-      product.imageUrl = updatedImageUrl;
-      product.description = updatedDesc;
-      return product.save();
-    })
+  // Product.findByPk(prodId)
+  //   .then((product) => {
+  //     product.title = updatedTitle;
+  //     product.price = updatedPrice;
+  //     product.imageUrl = updatedImageUrl;
+  //     product.description = updatedDesc;
+  //     return product.save();
+  //   })
+  //   .then((result) => {
+  //     console.log('Product Updated');
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
+  const product = new Product(
+    updatedTitle,
+    updatedPrice,
+    updatedDesc,
+    updatedImageUrl,
+    prodId
+  )
+    .save()
     .then((result) => {
       console.log('Product Updated');
       res.redirect('/admin/products');
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => console.log(err));
 };
 
+// GET PRODUCTS to be displayed in ADMIN PRODUCTS ------->
 exports.getProducts = (req, res, next) => {
   // ::::: MYSQL :::::
   // Product.fetchAll((products) => {
@@ -134,8 +182,21 @@ exports.getProducts = (req, res, next) => {
   //
   // :::::: SEQUELIZE ::::::
   // Product.findAll()
-  req.user
-    .getProducts()
+  // req.user
+  //   .getProducts()
+  //   .then((products) => {
+  //     res.render('admin/products', {
+  //       path: '/admin/products',
+  //       pageTitle: 'Admin Products',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
+  Product.fetchAll()
     .then((products) => {
       res.render('admin/products', {
         path: '/admin/products',
@@ -148,7 +209,7 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-// POST Delete:
+// POST PRODUCT to be DELETED ------->
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   // ::::: MYSQL :::::
@@ -156,12 +217,21 @@ exports.postDeleteProduct = (req, res, next) => {
   // res.redirect('/admin/products');
   //
   // :::::: SEQUELIZE ::::::
-  Product.findByPk(prodId)
-    .then((product) => {
-      return product.destroy();
-    })
-    .then((result) => {
-      console.log('Destroyed Done');
+  // Product.findByPk(prodId)
+  //   .then((product) => {
+  //     return product.destroy();
+  //   })
+  //   .then((result) => {
+  //     console.log('Destroyed Done');
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGODB ::::::
+  Product.deleteById(prodId)
+    .then(() => {
       res.redirect('/admin/products');
     })
     .catch((err) => {
