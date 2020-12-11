@@ -45,7 +45,14 @@ exports.postAddProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
-  const product = new Product(title, price, description, imageUrl);
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    null, // Null for ID.
+    req.user._id // String of Our User, specifically the _ID
+  );
   product
     .save()
     .then((result) => {
