@@ -200,6 +200,7 @@ exports.getCart = (req, res, next) => {
       console.log(err);
     });
 };
+
 // POST Cart Items --->
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;

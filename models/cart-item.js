@@ -4,17 +4,25 @@
 //:::::::::::::::::::::::::::::::::::::::::
 //
 
-const Sequelize = require('sequelize');
-const sequelize = require('../util/database');
+// const Sequelize = require('sequelize');
+// const sequelize = require('../util/database');
 
-const CartItem = sequelize.define('cartItem', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  quantity: Sequelize.INTEGER,
-});
+// const CartItem = sequelize.define('cartItem', {
+//   id: {
+//     type: Sequelize.INTEGER,
+//     autoIncrement: true,
+//     allowNull: false,
+//     primaryKey: true,
+//   },
+//   quantity: Sequelize.INTEGER,
+// });
 
-module.exports = CartItem;
+//
+//:::::::::::::::::::::::::::::::::::::::::
+//----------- Using MONGODB -----------
+//:::::::::::::::::::::::::::::::::::::::::
+//
+
+// NO NEED TO HAVE A CART-ITEM MODEL, WILL BE CREATED VIA USER MODEL
+
+// module.exports = CartItem;
