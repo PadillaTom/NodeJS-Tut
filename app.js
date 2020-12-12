@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   // ::: MONGODB :::
   User.findById('5fd352d904cc6677d0bbc8e6')
     .then((user) => {
-      req.user = user; // Access to User
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((err) => {
