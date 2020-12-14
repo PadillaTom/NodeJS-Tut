@@ -37,7 +37,20 @@ exports.getProducts = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB :::::::
-  Product.fetchAll()
+  // Product.fetchAll()
+  //   .then((products) => {
+  //     res.render('shop/product-list', {
+  //       path: '/products',
+  //       pageTitle: 'All Products',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE :::::::
+  Product.find() // Mongoose will transform it from CURSOR to ARRAY, so we can apply methods directly.
     .then((products) => {
       res.render('shop/product-list', {
         path: '/products',
@@ -92,8 +105,22 @@ exports.getProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
+  // const prodId = req.params.productId;
+  // Product.findById(prodId)
+  //   .then((product) => {
+  //     res.render('shop/product-detail', {
+  //       path: '/products',
+  //       pageTitle: product.title,
+  //       product: product,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE :::::::
   const prodId = req.params.productId;
-  Product.findById(prodId)
+  Product.findById(prodId) // FIND BY ID: Mongoose method, not our own
     .then((product) => {
       res.render('shop/product-detail', {
         path: '/products',
@@ -142,7 +169,20 @@ exports.getIndex = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB :::::::
-  Product.fetchAll()
+  // Product.fetchAll()
+  //   .then((products) => {
+  //     res.render('shop/index', {
+  //       path: '/',
+  //       pageTitle: 'Shop',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE :::::::
+  Product.find()
     .then((products) => {
       res.render('shop/index', {
         path: '/',
@@ -211,6 +251,8 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
 };
 
 // POST Cart Items --->
@@ -272,6 +314,8 @@ exports.postCart = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+  //
+  // :::::: MONGOOSE :::::::
 };
 
 // POST Remove Item from Cart --->
@@ -309,6 +353,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+  //
+  // :::::: MONGOOSE :::::::
 };
 
 // POST Order from Cart -->
@@ -354,6 +400,8 @@ exports.postOrder = (req, res, next) => {
       res.redirect('/orders');
     })
     .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
 };
 
 // GET Orders Page --->
@@ -382,6 +430,8 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
 };
 
 //  GET Checkout Page --->

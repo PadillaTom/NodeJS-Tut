@@ -122,6 +122,24 @@ exports.getEditProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
+  // Product.findById(prodId)
+  //   .then((product) => {
+  //     if (!product) {
+  //       res.redirect('/');
+  //     } else {
+  //       res.render('admin/edit-product', {
+  //         path: '/admin/edit-product',
+  //         pageTitle: 'Edit Product',
+  //         product: product,
+  //         editing: editMode,
+  //       });
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE ::::::
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -176,16 +194,31 @@ exports.postEditProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDesc,
-    updatedImageUrl,
-    prodId
-  )
-    .save()
+  // const product = new Product(
+  //   updatedTitle,
+  //   updatedPrice,
+  //   updatedDesc,
+  //   updatedImageUrl,
+  //   prodId
+  // )
+  //   .save()
+  //   .then((result) => {
+  //     console.log('Product Updated');
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE ::::::
+  Product.findById(prodId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDesc;
+      product.imageUrl = updatedImageUrl;
+      return product.save(); //SAVE will update behimd the scenes
+    })
     .then((result) => {
-      console.log('Product Updated');
+      console.log('Product Updated OK');
       res.redirect('/admin/products');
     })
     .catch((err) => console.log(err));
@@ -218,7 +251,20 @@ exports.getProducts = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
-  Product.fetchAll()
+  // Product.fetchAll()
+  //   .then((products) => {
+  //     res.render('admin/products', {
+  //       path: '/admin/products',
+  //       pageTitle: 'Admin Products',
+  //       prods: products,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE ::::::
+  Product.find()
     .then((products) => {
       res.render('admin/products', {
         path: '/admin/products',
@@ -252,8 +298,18 @@ exports.postDeleteProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
-  Product.deleteById(prodId)
+  // Product.deleteById(prodId)
+  //   .then(() => {
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE ::::::
+  Product.findByIdAndDelete(prodId)
     .then(() => {
+      console.log('Product Removed OK');
       res.redirect('/admin/products');
     })
     .catch((err) => {
