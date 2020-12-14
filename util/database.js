@@ -24,36 +24,42 @@
 // ::::::::::::::: Using MONGODB :::::::::::::::
 //
 
-const mongodb = require('mongodb');
-const MongoClient = mongodb.MongoClient;
+// const mongodb = require('mongodb');
+// const MongoClient = mongodb.MongoClient;
 
-let _db;
+// let _db;
 
-// Create a Method
-const mongoConnect = (callback) => {
-  MongoClient.connect(
-    'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/<dbname>?retryWrites=true&w=majority',
-    {
-      useUnifiedTopology: true,
-    }
-  )
-    .then((client) => {
-      console.log('Connected');
-      _db = client.db('shop'); // --> Connection to my DB(NAME)
-      callback();
-    })
-    .catch((err) => {
-      console.log(err);
-      throw err;
-    });
-};
+// // Create a Method
+// const mongoConnect = (callback) => {
+//   MongoClient.connect(
+//     'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/<dbname>?retryWrites=true&w=majority',
+//     {
+//       useUnifiedTopology: true,
+//     }
+//   )
+//     .then((client) => {
+//       console.log('Connected');
+//       _db = client.db('shop'); // --> Connection to my DB(NAME)
+//       callback();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       throw err;
+//     });
+// };
 
-const getDb = () => {
-  if (_db) {
-    return _db; // --> Acces to my connected DB
-  }
-  throw 'No DB Found';
-};
+// const getDb = () => {
+//   if (_db) {
+//     return _db; // --> Acces to my connected DB
+//   }
+//   throw 'No DB Found';
+// };
 
-exports.mongoConnect = mongoConnect;
-exports.getDb = getDb;
+// exports.mongoConnect = mongoConnect;
+// exports.getDb = getDb;
+
+//
+// ::::::::::::::: Using MONGOOSE :::::::::::::::
+//
+
+// WE DO NOT NEED A DATABSE FILE, ALL WILL BE STARTED IN APP.JS

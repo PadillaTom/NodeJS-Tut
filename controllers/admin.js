@@ -45,24 +45,39 @@ exports.postAddProduct = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null, // Null for ID.
-    req.user._id // String of Our User, specifically the _ID
-  );
+  // const product = new Product(
+  //   title,
+  //   price,
+  //   description,
+  //   imageUrl,
+  //   null, // Null for ID.
+  //   req.user._id // String of Our User, specifically the _ID
+  // );
+  // product
+  //   .save()
+  //   .then((result) => {
+  //     // console.log(result);
+  //     console.log('Creation OK');
+  //     res.redirect('/admin/products');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE ::::::
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+  });
   product
     .save()
     .then((result) => {
-      // console.log(result);
-      console.log('Creation OK');
+      console.log('Product Created');
       res.redirect('/admin/products');
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => console.log(err));
 };
 
 // GET PRODUCT to be EDITED ----->
