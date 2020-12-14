@@ -70,6 +70,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
+    userId: req.user,
   });
   product
     .save()
@@ -265,12 +266,17 @@ exports.getProducts = (req, res, next) => {
   //
   // :::::: MONGOOSE ::::::
   Product.find()
+    //  SELECT --> Only show what we choose, "- XXX" won't show
+    //  POPULATE --> Add values to the REF, second parameter: What to show
+    // .select('price -_id')
+    // .populate('userId', 'email') // Nos mostrará la ref de USERID
     .then((products) => {
       res.render('admin/products', {
         path: '/admin/products',
         pageTitle: 'Admin Products',
         prods: products,
       });
+      // console.log(products); // To view Populate / Select
     })
     .catch((err) => {
       console.log(err);

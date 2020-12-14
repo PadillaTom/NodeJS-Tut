@@ -22,7 +22,7 @@ const mongoose = require('mongoose');
 const errorController = require('./controllers/error');
 // Run Method to be Connected to MONGO DB :
 // const mongoConnect = require('./util/database').mongoConnect;
-// const User = require('./models/user');
+const User = require('./models/user');
 
 const app = express();
 
@@ -36,28 +36,38 @@ const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use((req, res, next) => {
-//   //
-//   // ::: MYSQL :::
-//   // User.findByPk(1)
-//   //   .then((user) => {
-//   //     req.user = user; // --> We set a SEQUELIZE Object for the user REQ(we have all methods and functions for it)
-//   //     next();
-//   //   })
-//   //   .catch((err) => {
-//   //     console.log(err);
-//   //   });
-//   //
-//   // ::: MONGODB :::
-//   // User.findById('5fd352d904cc6677d0bbc8e6')
-//   //   .then((user) => {
-//   //     req.user = new User(user.name, user.email, user.cart, user._id);
-//   //     next();
-//   //   })
-//   //   .catch((err) => {
-//   //     console.log(err);
-//   //   });
-// });
+app.use((req, res, next) => {
+  //
+  // ::: MYSQL :::
+  // User.findByPk(1)
+  //   .then((user) => {
+  //     req.user = user; // --> We set a SEQUELIZE Object for the user REQ(we have all methods and functions for it)
+  //     next();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // ::: MONGODB :::
+  // User.findById('5fd352d904cc6677d0bbc8e6')
+  //   .then((user) => {
+  //     req.user = new User(user.name, user.email, user.cart, user._id);
+  //     next();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // ::: MONGOOSE :::
+  User.findById('5fd74e7b3770cf2488fc0abf')
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -68,6 +78,18 @@ mongoose
     'mongodb+srv://tom:asdasd123@node-tut.ac97t.mongodb.net/shop?retryWrites=true&w=majority'
   )
   .then((result) => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: 'Tom',
+          email: 'tom@tom.com',
+          cart: {
+            items: [],
+          },
+        });
+        user.save();
+      }
+    });
     app.listen(3000);
   })
   .catch((err) => console.log(err));
