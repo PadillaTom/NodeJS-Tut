@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 // const Cart = require('../models/cart'); // --> User for FS
 
 // GET All Products --->
@@ -241,9 +242,23 @@ exports.getCart = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
+  // req.user
+  //   .getCart()
+  //   .then((products) => {
+  //     res.render('shop/cart', {
+  //       path: '/cart',
+  //       pageTitle: 'Your Cart',
+  //       products: products,
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
   req.user
-    .getCart()
-    .then((products) => {
+    .populate('cart.items.productId')
+    .execPopulate() // Returns a promise
+    .then((user) => {
+      const products = user.cart.items;
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
@@ -251,8 +266,6 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
-  //
-  // :::::: MONGOOSE :::::::
 };
 
 // POST Cart Items --->
@@ -302,6 +315,20 @@ exports.postCart = (req, res, next) => {
   //   });
   //
   // :::::: MONGODB ::::::
+  // Product.findById(prodId)
+  //   .then((product) => {
+  //     return req.user.addToCart(product);
+  //   })
+  //   .then((result) => {
+  //     // console.log(result);
+  //     console.log('Added to Cart');
+  //     res.redirect('/cart');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE :::::::
   Product.findById(prodId)
     .then((product) => {
       return req.user.addToCart(product);
@@ -314,8 +341,6 @@ exports.postCart = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  //
-  // :::::: MONGOOSE :::::::
 };
 
 // POST Remove Item from Cart --->
@@ -344,8 +369,19 @@ exports.postCartDeleteProduct = (req, res, next) => {
   //   .catch((err) => console.log(err));
   //
   // :::::: MONGODB ::::::
+  // req.user
+  //   .deleteItemFromCart(prodId)
+  //   .then((result) => {
+  //     console.log('Item Removed from Cart');
+  //     res.redirect('/cart');
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  //
+  // :::::: MONGOOSE :::::::
   req.user
-    .deleteItemFromCart(prodId)
+    .removeFromCart(prodId)
     .then((result) => {
       console.log('Item Removed from Cart');
       res.redirect('/cart');
@@ -353,13 +389,11 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  //
-  // :::::: MONGOOSE :::::::
 };
 
 // POST Order from Cart -->
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
+  // let fetchedCart;
   //
   // :::::: SEQUELIZE ::::::
   // req.user
@@ -393,15 +427,40 @@ exports.postOrder = (req, res, next) => {
   //   .catch((err) => console.log(err));
   //
   // :::::: MONGODB ::::::
+  // req.user
+  //   .addOrder()
+  //   .then((result) => {
+  //     console.log('Order Added');
+  //     res.redirect('/orders');
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
   req.user
-    .addOrder()
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then((user) => {
+      const products = user.cart.items.map((item) => {
+        return { quantity: item.quantity, product: { ...item.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user,
+        },
+        products: products,
+      });
+      return order.save();
+    })
     .then((result) => {
-      console.log('Order Added');
+      console.log('Order Placed');
+      // CLEAR CART
+      req.user.clearCart();
+    })
+    .then(() => {
       res.redirect('/orders');
     })
     .catch((err) => console.log(err));
-  //
-  // :::::: MONGOOSE :::::::
 };
 
 // GET Orders Page --->
@@ -420,8 +479,19 @@ exports.getOrders = (req, res, next) => {
   //   .catch((err) => console.log(err));
   //
   // :::::: MONGODB ::::::
-  req.user
-    .getOrders()
+  // req.user
+  //   .getOrders()
+  //   .then((orders) => {
+  //     res.render('shop/orders', {
+  //       path: '/orders',
+  //       pageTitle: 'Your Orders',
+  //       orders: orders,
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  //
+  // :::::: MONGOOSE :::::::
+  Order.find({ 'user.userId': req.user._id })
     .then((orders) => {
       res.render('shop/orders', {
         path: '/orders',
@@ -430,8 +500,6 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
-  //
-  // :::::: MONGOOSE :::::::
 };
 
 //  GET Checkout Page --->

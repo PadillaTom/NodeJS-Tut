@@ -181,6 +181,7 @@
 //
 
 const mongoose = require('mongoose');
+const { update } = require('./product');
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   name: {
@@ -204,4 +205,55 @@ const userSchema = new Schema({
     ],
   },
 });
+
+//
+//  ----- METHODS ---> Must be Regular Function (So THIS keywoard is binded to the SCHEMA)
+//
+
+// Add to Cart:
+userSchema.methods.addToCart = function (product) {
+  //  ---> Check if the Product Exists in Cart:
+  const cartProductIndex = this.cart.items.findIndex((cp) => {
+    return cp.productId.toString() === product._id.toString();
+  });
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items];
+
+  if (cartProductIndex >= 0) {
+    // SI EXISTE: Sumamos Qty y La asignamos a dicho Producto
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    // SI NO EXISTE: Agregamos dicho producto al Array
+    updatedCartItems.push({
+      productId: product._id, //Mongoose will make it ObjectId
+      quantity: newQuantity,
+    });
+  }
+  // ---> Asociamos producto a la variable para luego save it to DB
+  const updatedCart = {
+    items: updatedCartItems,
+  };
+  this.cart = updatedCart;
+  return this.save(); // Will push to DB
+};
+
+// Remove from Cart:
+userSchema.methods.removeFromCart = function (productId) {
+  const updatedCartItems = this.cart.items.filter((item) => {
+    // TRUE = Keep Itemin ARRAY , FALSE = Remove It from ARRAY
+    return item.productId.toString() !== productId.toString();
+  });
+  this.cart.items = updatedCartItems;
+  return this.save();
+};
+
+// After Placing Order --> CLEAR CART:
+userSchema.methods.clearCart = function () {
+  this.cart = {
+    items: [],
+  };
+  return this.save();
+};
+
 module.exports = mongoose.model('User', userSchema);
