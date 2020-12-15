@@ -5,6 +5,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
+    isAuthenticated: req.isLoggedIn,
   });
 };
 
@@ -151,6 +152,7 @@ exports.getEditProduct = (req, res, next) => {
           pageTitle: 'Edit Product',
           product: product,
           editing: editMode,
+          isAuthenticated: req.isLoggedIn,
         });
       }
     })
@@ -275,6 +277,7 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products',
         pageTitle: 'Admin Products',
         prods: products,
+        isAuthenticated: req.isLoggedIn,
       });
       // console.log(products); // To view Populate / Select
     })
